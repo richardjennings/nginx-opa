@@ -3,13 +3,30 @@ package cmd
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
 	"net/http"
-	url2 "net/url"
 	"os"
 	"strings"
+)
+
+type (
+	Input struct {
+		Attributes Attributes `json:"attributes"`
+	}
+	Attributes struct {
+		Request Request `json:"request"`
+	}
+	Request struct {
+		Http Http `json:"http"`
+	}
+	Http struct {
+		Path    string              `json:"path"`
+		Method  string              `json:"method"`
+		Headers map[string][]string `json:"headers"`
+	}
 )
 
 var serveCmd = &cobra.Command{
@@ -21,10 +38,6 @@ var serveCmd = &cobra.Command{
 		if !ok {
 			log.Fatalf("OPA_URL environment variable required")
 		}
-		url, err := url2.Parse(upstream)
-		if err != nil {
-			log.Fatalf("suppled URL %s invalid: %s", args[0], err)
-		}
 		expected, ok := os.LookupEnv("EXPECTED_RESPONSE")
 		if !ok {
 			expected = `{"allow":true}`
@@ -33,12 +46,27 @@ var serveCmd = &cobra.Command{
 		server := &http.Server{
 			Addr: ":8282",
 			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				req := &http.Request{}
-				req.URL = url
-				req.Header = r.Header
-				req.Method = http.MethodPost
-				req.Body = nil
-				res, err := http.DefaultClient.Do(req)
+				inputs := Input{
+					Attributes: Attributes{
+						Request: Request{
+							Http: Http{
+								Headers: make(http.Header),
+							},
+						},
+					},
+				}
+
+				for k, v := range r.Header {
+					inputs.Attributes.Request.Http.Headers[strings.ToLower(k)] = v
+				}
+
+				inputJson, err := json.Marshal(inputs)
+				if err != nil {
+					log.Printf("error encoding input json: %s", err)
+					return
+				}
+
+				res, err := http.Post(upstream, "application/json", bytes.NewBuffer(inputJson))
 				if err != nil {
 					w.WriteHeader(500)
 					_, err := w.Write([]byte(err.Error()))
@@ -46,15 +74,26 @@ var serveCmd = &cobra.Command{
 						log.Printf("could not write error to client %s", err)
 						return
 					}
+					return
 				}
+
 				buff := bytes.NewBuffer(nil)
-				defer func() { _ = res.Body.Close() }()
 				_, err = io.Copy(buff, res.Body)
+				defer func() { _ = res.Body.Close() }()
 				if err != nil {
 					log.Printf("could not copy response body: %s", err)
 				}
+
+				if res.StatusCode != 200 {
+					w.WriteHeader(401)
+					log.Println("response %s", buff.String())
+					return
+				}
+
+				log.Println(buff.String())
 				if strings.TrimSuffix(buff.String(), "\n") != expected {
 					w.WriteHeader(401)
+					return
 				}
 				w.WriteHeader(200)
 			}),
