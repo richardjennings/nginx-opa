@@ -3,7 +3,7 @@ package cmd
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/json"
+	"github.com/richardjennings/opa-nginx-auth-request/adapter"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
@@ -12,22 +12,7 @@ import (
 	"strings"
 )
 
-type (
-	Input struct {
-		Attributes Attributes `json:"attributes"`
-	}
-	Attributes struct {
-		Request Request `json:"request"`
-	}
-	Request struct {
-		Http Http `json:"http"`
-	}
-	Http struct {
-		Path    string              `json:"path"`
-		Method  string              `json:"method"`
-		Headers map[string][]string `json:"headers"`
-	}
-)
+const defaultExpected = `{"allow":true}`
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -40,33 +25,18 @@ var serveCmd = &cobra.Command{
 		}
 		expected, ok := os.LookupEnv("EXPECTED_RESPONSE")
 		if !ok {
-			expected = `{"allow":true}`
+			expected = defaultExpected
 		}
 		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 		server := &http.Server{
 			Addr: ":8282",
 			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				inputs := Input{
-					Attributes: Attributes{
-						Request: Request{
-							Http: Http{
-								Headers: make(http.Header),
-							},
-						},
-					},
-				}
-
-				for k, v := range r.Header {
-					inputs.Attributes.Request.Http.Headers[strings.ToLower(k)] = v
-				}
-
-				inputJson, err := json.Marshal(inputs)
+				body, err := adapter.RequestBody(r)
 				if err != nil {
-					log.Printf("error encoding input json: %s", err)
-					return
-				}
 
-				res, err := http.Post(upstream, "application/json", bytes.NewBuffer(inputJson))
+				}
+				res, err := http.Post(upstream, "application/json", body)
+
 				if err != nil {
 					w.WriteHeader(500)
 					_, err := w.Write([]byte(err.Error()))
@@ -86,15 +56,14 @@ var serveCmd = &cobra.Command{
 
 				if res.StatusCode != 200 {
 					w.WriteHeader(401)
-					log.Println("response %s", buff.String())
 					return
 				}
 
-				log.Println(buff.String())
 				if strings.TrimSuffix(buff.String(), "\n") != expected {
 					w.WriteHeader(401)
 					return
 				}
+
 				w.WriteHeader(200)
 			}),
 		}

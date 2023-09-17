@@ -1,37 +1,42 @@
-# OPA Nginx Auth Request 
+# Ingress Nginx OPA
 
-Provide a Nginx Auth Request compatible response from an OPA REST Policy evaluation response.
+# What
+Integration between Open Policy Agent and Ingress Nginx to allow OPA policy evaluation via Nginx Auth Request module.
 
 ## How
 
-Nginx Auth Request sends request to OPA Nginx Auth Request.
+Ingress Nginx is configured to send Auth Requests to this proxy, e.g. via a `global-auth-url` entry in the Ingress Nginx Configmap. 
 
-The requests header keys are lower-cased and posted to OPA as json to be evaluated as inputs.
+This request is transformed into a policy evaluation request set to an OPA REST API address, 
+e.g. POST `http://opa-svc.opa.svc.cluster.local:8181`
+
+The result of policy evaluation is compared to predefined expectation and either a `200` or `401` is
+returned to Nginx. By default, the OPA response is compared to the string `{"allow":true}`.
 
 The inputs provided to OPA are of the form:
 
 ```
-"attributes": {
+{
+  "attributes": {
     "request": {
-        "http": {
-            "headers": {
-                "example": ["value"]
-            },
-            //"path": "/some/path",
-            //"query": {
-            //    "foo": "bar"
-            //},
-            //"method": "GET",
-            //"host": "test.com"
-        }
+      "http": {
+        "headers": {
+          "example": [
+            "value"
+          ]
+        },
+        "path": "/some/path",
+        "query": {
+          "foo": "bar"
+        },
+        "method": "GET",
+        "host": "test.com"
+      },
+      "ipAddr": "10.10.10.10"
     }
+  }
 }
 ```
-
-A policy can be evaluated against these inputs. 
-
-The result of policy evaluation is compared to predefined expectation and either a `200` or `401` is 
-returned to Nginx.
 
 An example policy for the above might look like:
 
@@ -44,22 +49,11 @@ default allow = false
 
 allow if {
     input.attributes.request.http.headers.example[0] == "value"
-    #input.attributes.request.http.method == "GET"
-    #input.attributes.request.http.host == "test.com"
-    #input.attributes.request.http.query.foo == "bar"
+    input.attributes.request.http.method == "GET"
+    input.attributes.request.http.host == "test.com"
+    input.attributes.request.http.query.foo[0] == "bar"
 }
 ```
-
-By default, multiple aspects of the original request are not passed by Nginx in the Auth Request.
-
-The following headers can be specified in Nginx config and are translated to OPA inputs:
-```
-proxy_set_header            X-Original-URL          $scheme://$http_host$request_uri;
-proxy_set_header            X-Original-Method       $request_method;
-proxy_set_header            X-Real-IP               $remote_addr;
-proxy_set_header            X-Forwarded-For         $full_x_forwarded_for;
-```
-
 
 ## Status
 
