@@ -1,8 +1,6 @@
-package adapter
+package internal
 
 import (
-	"bytes"
-	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
@@ -29,8 +27,8 @@ type (
 	}
 )
 
-func RequestBody(r *http.Request) (*bytes.Buffer, error) {
-	inputs := Input{
+func Inputs(r *http.Request) *Input {
+	inputs := &Input{
 		Attributes: Attributes{
 			Request: Request{
 				Http: Http{
@@ -65,7 +63,5 @@ func RequestBody(r *http.Request) (*bytes.Buffer, error) {
 			inputs.Attributes.Request.Http.Query = originalUrl.Query()
 		}
 	}
-	inputJson, err := json.Marshal(inputs)
-	buf := bytes.NewBuffer(inputJson)
-	return buf, err
+	return inputs
 }

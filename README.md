@@ -10,8 +10,10 @@ Ingress Nginx is configured to send Auth Requests to this proxy, e.g. via a `glo
 This request is transformed into a policy evaluation request set to an OPA REST API address, 
 e.g. POST `http://opa-svc.opa.svc.cluster.local:8181`
 
-The result of policy evaluation is compared to predefined expectation and either a `200` or `401` is
-returned to Nginx. By default, the OPA response is compared to the string `{"allow":true}`.
+The result of policy evaluation is compared to predefined expectation and either a `200`, `401` or `403` is
+returned to Nginx. AuthenticatedKey and AuthenticatedValue may be set to match a key value in the OPA response. 
+If set and a match is not found, a 401 response is returned. AuthorisedKey and AuthorisedValue default to `allow` and 
+`true` respectively. If Authorised Key and Value do not match a key value in the OPA response a 403 is returned.
 
 The inputs provided to OPA are of the form:
 
@@ -57,4 +59,4 @@ allow if {
 
 ## Status
 
-Proof of concept.
+Alpha
