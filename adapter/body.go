@@ -46,17 +46,17 @@ func RequestBody(r *http.Request) (*bytes.Buffer, error) {
 	}
 
 	// X-Original-Method
-	if v, ok := r.Header["X-Original-Method"]; ok {
+	if v, ok := inputs.Attributes.Request.Http.Headers["x-original-method"]; ok {
 		inputs.Attributes.Request.Http.Method = strings.ToLower(v[0])
 	}
 
 	// X-Real-IP
-	if v, ok := r.Header["X-Real-IP"]; ok {
+	if v, ok := inputs.Attributes.Request.Http.Headers["x-real-ip"]; ok {
 		inputs.Attributes.Request.IpAddr = v[0]
 	}
 
 	// X-Original-URL
-	if v, ok := r.Header["X-Original-URL"]; ok {
+	if v, ok := inputs.Attributes.Request.Http.Headers["x-original-url"]; ok {
 		originalUrl, err := url.Parse(v[0])
 		if err == nil {
 			inputs.Attributes.Request.Http.Scheme = originalUrl.Scheme
