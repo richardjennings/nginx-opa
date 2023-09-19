@@ -7,4 +7,5 @@ RUN GOOS=linux GOARCH=amd64 go build -mod=readonly -o /bin/ino
 
 FROM scratch
 COPY --from=builder /bin/ino /bin/ino
-CMD ["/bin/ino", "serve"]
+ENTRYPOINT ["/bin/ino"]
+CMD ["serve"]

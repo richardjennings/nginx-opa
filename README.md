@@ -7,7 +7,7 @@ Integration between Open Policy Agent and Ingress Nginx to allow OPA policy eval
 
 Ingress Nginx is configured to send Auth Requests to this proxy, e.g. via a `global-auth-url` entry in the Ingress Nginx Configmap. 
 
-This request is transformed into a policy evaluation request set to an OPA REST API address, 
+This request is transformed into a policy evaluation request sent to an OPA REST API address, 
 e.g. POST `http://opa-svc.opa.svc.cluster.local:8181`
 
 The result of policy evaluation is compared to predefined expectation and either a `200`, `401` or `403` is

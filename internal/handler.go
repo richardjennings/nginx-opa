@@ -146,10 +146,10 @@ func NewHandler(opa Opa) http.HandlerFunc {
 		case Ok:
 			w.WriteHeader(200)
 			return
-		case UnAuthorised:
+		case UnAuthenticated:
 			w.WriteHeader(401)
 			return
-		case UnAuthenticated:
+		case UnAuthorised:
 			w.WriteHeader(403)
 			return
 		}
