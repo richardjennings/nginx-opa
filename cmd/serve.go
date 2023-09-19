@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"crypto/tls"
-	"github.com/richardjennings/opa-nginx-auth-request/internal"
+	"github.com/richardjennings/ingress-nginx-opa/internal"
 	"github.com/spf13/cobra"
 	"log"
 	"net/http"

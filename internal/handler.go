@@ -70,6 +70,9 @@ func (o *OpaProxy) Handle(input *Input) (Result, error) {
 	}
 	body := bytes.NewBuffer(b)
 	res, err := http.Post(o.Config.Upstream, "application/json", body)
+	if err != nil {
+		return Invalid, err
+	}
 	buff := bytes.NewBuffer(nil)
 	_, err = io.Copy(buff, res.Body)
 	defer func() { _ = res.Body.Close() }()
