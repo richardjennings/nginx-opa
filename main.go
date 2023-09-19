@@ -1,6 +1,6 @@
 package main
 
-import "github.com/richardjennings/opa-nginx-auth-request/cmd"
+import "github.com/richardjennings/ingress-nginx-opa/cmd"
 
 func main() {
 	cmd.Execute()
