@@ -100,12 +100,10 @@ func (o *OpaProxy) Result(v map[string]interface{}) (Result, error) {
 			} else if !authN && (o.Config.AuthenticatedValue != "false") {
 				return UnAuthenticated, nil
 			}
-			return Ok, nil
 		case string:
 			if authN != o.Config.AuthenticatedValue {
 				return UnAuthenticated, nil
 			}
-			return Ok, nil
 		default:
 			return Invalid, errors.New("unexpected type found in OPA response for AuthenticatedKey")
 		}
@@ -122,15 +120,14 @@ func (o *OpaProxy) Result(v map[string]interface{}) (Result, error) {
 		} else if !authZ && (o.Config.AuthorisedValue != "false") {
 			return UnAuthorised, nil
 		}
-		return Ok, nil
 	case string:
 		if authZ != o.Config.AuthorisedValue {
 			return UnAuthorised, nil
 		}
-		return Ok, nil
 	default:
 		return Invalid, errors.New("unexpected type found in OPA response for AuthenticatedKey")
 	}
+	return Ok, nil
 }
 
 func NewHandler(opa Opa) http.HandlerFunc {
