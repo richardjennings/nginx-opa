@@ -1,7 +1,7 @@
 # Ingress Nginx OPA
 
 # What
-Integration between Open Policy Agent and Ingress Nginx to allow OPA policy evaluation via Nginx Auth Request module.
+OPA policy evaluation of Nginx Auth Requests.
 
 ## How
 
