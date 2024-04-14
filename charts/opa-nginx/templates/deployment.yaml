@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa-nginx
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: opa-nginx
+  template:
+    metadata:
+      labels:
+        app: opa-nginx
+      annotations:
+        checksum/policy: '{{ .Values.policy | toYaml | sha256sum }}'
+        checksum/config: '{{ .Values.config | toYaml | sha256sum }}'
+      name: opa-nginx
+    spec:
+      containers:
+        - name: opa
+          image: {{ .Values.opa.image }}
+          imagePullPolicy: {{ .Values.opa.imagePullPolicy }}
+          args:
+            - run
+            - --server
+            - --bundle
+            - --config-file=/config/config.yaml
+            - --tls-cert-file=/certs/tls.crt
+            - --tls-private-key-file=/certs/tls.key
+            - --addr=localhost:8181
+            - --log-level={{ .Values.opa.logLevel }}
+            - --log-format=json
+            - /policy
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+              readOnly: true
+            - mountPath: /policy/system
+              readOnly: true
+              name: policy
+            - mountPath: /config
+              readOnly: true
+              name: config
+
+        - name: opa-nginx
+          image:  {{ .Values.opaNginx.image }}
+          imagePullPolicy: {{ .Values.opaNginx.imagePullPolicy }}
+          args:
+            - serve
+            - --tls-cert-file=/certs/tls.crt
+            - --tls-private-key-file=/certs/tls.key
+          env:
+            - name: OPA_URL
+              value: https://127.0.0.1:8181
+            {{- if ne .Values.opaNginx.authenticatedKey ""}}
+            - name: AUTHENTICATED_KEY
+              value: "{{ .Values.opaNginx.authenticatedKey }}"
+            {{- end }}
+            {{- if ne .Values.opaNginx.authenticatedValue ""}}
+            - name: AUTHENTICATED_VALUE
+              value: "{{ .Values.opaNginx.authenticatedValue }}"
+            {{- end }}
+            - name: AUTHORIZED_KEY
+              value: "{{ .Values.opaNginx.authorizedKey }}"
+            - name: AUTHORIZED_VALUE
+              value: "{{ .Values.opaNginx.authorizedValue }}"
+          ports:
+            - name: http
+              containerPort: 8282
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+              readOnly: true
+      volumes:
+        - name: certs
+          secret:
+            secretName: opa-nginx-cert
+        - name: policy
+          projected:
+            sources:
+              - configMap:
+                  name: policy
+                  items:
+                    {{- range .Values.policy }}
+                    - key: {{ .key }}
+                      path: {{ .path }}
+                    {{- end }}
+        - name: config
+          configMap:
+            name: opa-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+---

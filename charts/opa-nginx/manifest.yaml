@@ -1,0 +1,143 @@
+---
+# Source: opa-nginx/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: opa-nginx-cert
+  namespace: opa-nginx
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVRENDQWppZ0F3SUJBZ0lRS0dGQVZOUG5yVG1aajAzK1VDaHYzVEFOQmdrcWhraUc5dzBCQVFzRkFEQVgKTVJVd0V3WURWUVFERXd4dmNHRXRibWRwYm5ndFkyRXdIaGNOTWpRd05ERTBNVFExT1RNeFdoY05NalV3TkRFMApNVFExT1RNeFdqQVVNUkl3RUFZRFZRUURFd2x2Y0dFdGJtZHBibmd3Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBCkE0SUJEd0F3Z2dFS0FvSUJBUUQyZFVBL2c1aG5ZVkpXRUxQcStqVkxUNkxRVFp6ZmtRYXFsempvQTNoZDhHa00KV3JOSktHd2tyNlJrME84V0U0TURlMENKcUhINmxNTlgwdkFwYW1pcUk2MzZnS0wyTndqU0lDSzhtS0JmbWZYOQpJeUNlckxUY3U5bm54VFdaU2N2L1VSWnZTVEVkOHF6VktySjJRNzRtcFBCS005M1Zxb0x5bjE4bDU3UFNnejJyCmdyQWJETWxjRm5HU3FaODEvVC9PTHp3Vy9QQ2ZjY1lkNE1PUHRPVDVHcmpkdUFmellYUmZUTkRhelBiRjJSSmUKUGdTUmNjYlcvRDN4R3cwZFROQlZhUW5JRmlFdmJZUklHL1RwV2ZDSEVxbjFJa3ZmU0o1ZTJUNmtYb2JWYjgwUwpGeDI5UE9xMFZHSmU3azhrN3djREIyczM3b3hkaG9CcUZvNjAvckxMQWdNQkFBR2pnWm93Z1pjd0RnWURWUjBQCkFRSC9CQVFEQWdXZ01CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNQmdOVkhSTUIKQWY4RUFqQUFNQjhHQTFVZEl3UVlNQmFBRkNqRXV6a1FwTjh2dDQvWWdqV2Z5Q2pSNmV2MU1EY0dBMVVkRVFRdwpNQzZDRTI5d1lTMXVaMmx1ZUM1dmNHRXRibWRwYm5pQ0YyOXdZUzF1WjJsdWVDNXZjR0V0Ym1kcGJuZ3VjM1pqCk1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQnhRL2pJRndvazM5b05JZ0liQUthdjJiVW05OHp0YVhkTC9nSFUKZUx4czlaMDFITUdFNGt2V0FhZWYwajNJS1lTZStyV2xJdC93bEdFdGYxYkhTS0l5d1c3a1AzUUdsVklJbzR5RgpYNEZyK0F0NHpib0o0b0pRZTVPeTBHTkNJcTBzVE1oT2tkSncrUWNtYU9uZ0svblhvWUhoemNtNzlqUHQvbmkvCnVwYXNJZVY3anRyaXZwdHZjWXJ2cnBMTi9zNEorMVJoaGxNM1duR2tUUGwrOS9zSDVyci9tSGt3cDhNdWJwM04KSW92VG9teUxFTHlRVVBjQitHSXdTLzBFaldkRVpybVlDZ2RQbWpPdjdyeTNxR3JBck1OL2FYZTA2THZycDQ4MQpRU0Zyam44YWFteXUvT1J6VE4xaTRISXR6eXdkd3JsanJzQklZWGJUMkpMNklZWmkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBOW5WQVA0T1laMkZTVmhDejZ2bzFTMCtpMEUyYzM1RUdxcGM0NkFONFhmQnBERnF6ClNTaHNKSytrWk5EdkZoT0RBM3RBaWFoeCtwVERWOUx3S1dwb3FpT3Qrb0NpOWpjSTBpQWl2SmlnWDVuMS9TTWcKbnF5MDNMdlo1OFUxbVVuTC8xRVdiMGt4SGZLczFTcXlka08rSnFUd1NqUGQxYXFDOHA5ZkplZXowb005cTRLdwpHd3pKWEJaeGtxbWZOZjAvemk4OEZ2enduM0hHSGVERGo3VGsrUnE0M2JnSDgyRjBYMHpRMnN6Mnhka1NYajRFCmtYSEcxdnc5OFJzTkhVelFWV2tKeUJZaEwyMkVTQnYwNlZud2h4S3A5U0pMMzBpZVh0aytwRjZHMVcvTkVoY2QKdlR6cXRGUmlYdTVQSk84SEF3ZHJOKzZNWFlhQWFoYU90UDZ5eXdJREFRQUJBb0lCQUIxdE9JT2M0Y2lPTFRlTApmUC8wYWdLWStwYW1mYkdQN2x6ViszeHdWYUhadjZFeS95OGYvWEdQNnpBQ1psbWJjTXdzbmpNUmdySnBxcjFFCnVWb29rMkNsSy9PNkFqc2xyUTd4dVZRTllUQ3BBRjcrSDdueVl4SHIrQU9kWDEzekdzRmNYREpqYWRMcWs4cEwKODh6OUg2b2JqWGsrb2lFTjM5NjZPckVhN2pTWExQeVBVOFdVR21obmlEMGFuZkRmQU5BbmJTMEZkUVZwUVlHcQphTzY4ZzluQlNxWk9EUCs2N250eWMybXZ0V1ovazIvVjdEWkpmRzdyMzAyMU1DbFNSblF2ZHVzNHlONEhTbTJpCkROZmdGVmZyUlE2SVFlU0U4SXF5VDh1VFZDcXFVZXlRYTV4RHBWK0hnUEVrdDdWMHA2czBJdWM1ejJvUFQxK00Ka2EzZHcvRUNnWUVBL2FRSEh4b1NNQ0tQNEFaS1RqSXBjUXowSlJUTDdLWFB4MlJIaW1HQUZaQWdkM2NwV2JsTQp3bkkvVm5oKzNRNjAzWmdtK21BczVieDJhQ0ZwWmVFSC9zaGZNSGlLUDdmR1BxbHNGR05laGV2YTFSYU5JUFdECnErbnVKQS9NQmtYSndnZmlEd0xlRjdUd3o0c3R3MnlSSGp2aGhrNncxTnhrRDFuRzduMWJwK01DZ1lFQStNQWUKbkVMVzhGelQ2NGM5bml6YXlWR2hRQVR6bTFyU2FyalE2eVljWXBiR1d1NlpUWi90VEdXY3JkZGJrNU1Pak8zVAo1OTNyWU9DcjZLdFVyZjJyWTdXYnlqMHozMm1VbSswZm5qNXZjNkxCWG5IOU9PUGFjSFRqOUtxbXVwbFJCMUJuClhsWGthZ0hoSHUxWXp5eVgrYnF3a29Wdlc3Vmo5UHBUK0RWTXJma0NnWUFLK2RJbEVtZS9GWC9NWGZsUk1QS0MKSmVGYXlXK1pxZ00zeWFzZTNlRkJEWithQzlvS08rNkthNDg2R3JUQ3RDUTNncUlOSzZSRnZNWVM4Mzh3SFhEUApJYlNjMEZxTEwxU3cyWHdIMWRUOVRwdUZwUmd1V1BGOXV2M0hLYmZXZmFhaGN0M2hjR3BUOUV5SGJxcG9Ub1pwCkhJWkIzWjNoV0Rnc1FlSk41N2JUcVFLQmdRRE1SU2hkOWQyQUFScmVIVzhTUjQ5Ykp6ZWQxUE1mcnBPQXBFaWIKOGUzNVlBdC9mTlJUbEhOUCsxbVF3SHNwVXVmdC94ZTNIdHc5OEFIN3pVWjZvd2R0bUNOWkRxMWNWOTE3dGx2eQpuUjcwL01DQ2lHVURwTWtxOURLR0p1Vkg4c05CbUZ0cWNtcGlTeXpOTXVkdEtoZWJNaDN5RkxWL3dCTlhoNElSCkgrUGFNUUtCZ0IzUEpYTEdpaFRrY0RWNURqZ3NReVdaWm5pZDVpTkJQNUhoekVDNytnUS9tRlRJOVJML2EvOTQKZEZIc0FnVmJIbm9JSWorVGVxQWFGbTd6c3hpMk5CdW1MeEp0RkY0Z0RNOTN6MnBpdnBRZk1vdlQxYXBBR1hhdApuZG1PTFZHOGs2SkY3RU5uamtkbUIzcEIyS1d6ZkxVeFdDKy9TUzlGb2ltRU1za2VCMG9YCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+---
+# Source: opa-nginx/templates/configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: opa-nginx
+  name: policy
+data:
+  main.rego: |
+   package system.main
+   import future.keywords
+   default allow := false
+   
+   allow if {
+     input.attributes.request.http.host == "example.domain.tld"
+   }
+---
+# Source: opa-nginx/templates/configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: opa-nginx
+  name: opa-config
+data:
+  config.yaml: |
+   decision_logs:
+     console: true
+---
+# Source: opa-nginx/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opa-nginx
+  namespace: opa-nginx
+spec:
+  ports:
+    - port: 8282
+      protocol: TCP
+      targetPort: 8282
+  selector:
+    app: opa-nginx
+---
+# Source: opa-nginx/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa-nginx
+  namespace: opa-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: opa-nginx
+  template:
+    metadata:
+      labels:
+        app: opa-nginx
+      annotations:
+        checksum/policy: 'dbd5711603b2c5364e3ff16acc73bf19fc443b41dc1ffc3c0e847eb5be4631fe'
+        checksum/config: 'bf3e93559f1f380a2a2fc5bb5d00736a43f0f53a9ed2890461e08b78cd950a99'
+      name: opa-nginx
+    spec:
+      containers:
+        - name: opa
+          image: openpolicyagent/opa:0.53.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - run
+            - --server
+            - --bundle
+            - --config-file=/config/config.yaml
+            - --tls-cert-file=/certs/tls.crt
+            - --tls-private-key-file=/certs/tls.key
+            - --addr=localhost:8181
+            - --log-level=debug
+            - --log-format=json
+            - /policy
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+              readOnly: true
+            - mountPath: /policy/system
+              readOnly: true
+              name: policy
+            - mountPath: /config
+              readOnly: true
+              name: config
+
+        - name: opa-nginx
+          image:  opa-nginx:test
+          imagePullPolicy: IfNotPresent
+          args:
+            - serve
+            - --tls-cert-file=/certs/tls.crt
+            - --tls-private-key-file=/certs/tls.key
+          env:
+            - name: OPA_URL
+              value: https://127.0.0.1:8181
+            - name: AUTHENTICATED_KEY
+              value: ""
+            - name: AUTHENTICATED_VALUE
+              value: ""
+            - name: AUTHORIZED_KEY
+              value: "allow"
+            - name: AUTHORIZED_VALUE
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 8282
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+              readOnly: true
+      volumes:
+        - name: certs
+          secret:
+            secretName: opa-nginx-cert
+        - name: policy
+          projected:
+            sources:
+              - configMap:
+                  name: policy
+                  items:
+                    - key: main.rego
+                      path: system/main.rego
+        - name: config
+          configMap:
+            name: opa-config
+            items:
+              - key: config.yaml
+                path: config.yaml

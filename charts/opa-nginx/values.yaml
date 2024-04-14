@@ -1,0 +1,32 @@
+
+nameOverride: ""
+replicaCount: 3
+opaNginx:
+  image: richardjennings/opa-nginx:0.0.2
+  imagePullPolicy: IfNotPresent
+  #authenticatedKey: "verified"
+  #authenticatedValue: "true"
+  authorizedKey: "allow"
+  authorizedValue: "true"
+opa:
+  image: openpolicyagent/opa:0.53.1
+  imagePullPolicy: IfNotPresent
+  logLevel: debug
+config: |
+  decision_logs:
+    console: true
+policy:
+  - path: system/main.rego
+    key: main.rego
+    content: |
+      package system.main
+      import future.keywords
+      default allow := false
+      
+      allow if {
+        input.attributes.request.http.host == "example.domain.tld"
+      }
+
+
+
+
