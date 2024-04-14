@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  opa-nginx:
+  - apiVersion: v2
+    appVersion: 0.0.2
+    created: "2024-04-14T15:23:14.665149893Z"
+    description: OPA Nginx Auth Request Integration
+    digest: 039a1f6ba2c95905795df814b75c5c7f026fd38e9440950fb21ab4a91043bbbc
+    name: opa-nginx
+    type: application
+    urls:
+    - https://github.com/richardjennings/opa-nginx/releases/download/opa-nginx-0.0.2/opa-nginx-0.0.2.tgz
+    version: 0.0.2
+generated: "2024-04-14T15:23:14.665158589Z"
