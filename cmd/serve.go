@@ -34,12 +34,19 @@ var serveCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalln(err)
 		}
+
+		mux := http.NewServeMux()
+		mux.HandleFunc("/", internal.NewHandler(&internal.OpaProxy{Config: config}))
+		mux.HandleFunc("/healthz", func(writer http.ResponseWriter, request *http.Request) {
+			writer.WriteHeader(200)
+		})
 		server := &http.Server{
 			Addr:         defaultAddr,
-			Handler:      internal.NewHandler(&internal.OpaProxy{Config: config}),
+			Handler:      mux,
 			ReadTimeout:  5 * time.Second,
 			WriteTimeout: 10 * time.Second,
 		}
+
 		if tlsCertFile != "" && tlsPrivateKeyFile != "" {
 			log.Fatalln(server.ListenAndServeTLS(tlsCertFile, tlsPrivateKeyFile))
 		}
