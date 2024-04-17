@@ -2,7 +2,7 @@
 nameOverride: ""
 replicaCount: 3
 opaNginx:
-  image: richardjennings/opa-nginx:0.0.2
+  image: richardjennings/opa-nginx:0.0.3
   imagePullPolicy: IfNotPresent
   #authenticatedKey: "verified"
   #authenticatedValue: "true"

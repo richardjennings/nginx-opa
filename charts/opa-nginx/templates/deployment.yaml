@@ -30,7 +30,7 @@ spec:
             - --tls-private-key-file=/certs/tls.key
             - --addr=localhost:8181
             - --log-level={{ .Values.opa.logLevel }}
-            - --diagnostic-addr=localhost:8080
+            - --diagnostic-addr=0.0.0.0:8080
             - --disable-telemetry
             - --log-format=json
             - /policy
@@ -39,8 +39,19 @@ spec:
               scheme: HTTPS
               path: /health
               port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 30
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 1
           volumeMounts:
             - mountPath: /certs
               name: certs
@@ -78,6 +89,24 @@ spec:
             - name: http
               containerPort: 8282
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: 8282
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /healthz
+              port: 8282
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 1
           volumeMounts:
             - mountPath: /certs
               name: certs
