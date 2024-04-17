@@ -30,8 +30,17 @@ spec:
             - --tls-private-key-file=/certs/tls.key
             - --addr=localhost:8181
             - --log-level={{ .Values.opa.logLevel }}
+            - --diagnostic-addr=localhost:8080
+            - --disable-telemetry
             - --log-format=json
             - /policy
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 30
           volumeMounts:
             - mountPath: /certs
               name: certs
