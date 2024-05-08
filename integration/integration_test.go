@@ -78,17 +78,27 @@ verified if {
 		},
 		{
 			ContainerRequest: testcontainers.ContainerRequest{
-				Image:        "nginx",
+				Image: "nginx",
+
 				ExposedPorts: []string{"8080:80/tcp"},
 				WaitingFor:   wait.ForHTTP("/healthz"),
-				Mounts: testcontainers.ContainerMounts{
-					testcontainers.ContainerMount{
-						Source: testcontainers.GenericBindMountSource{
-							HostPath: nginxConfFile,
-						},
-						Target: "/etc/nginx/nginx.conf",
+				Files: []testcontainers.ContainerFile{
+					{
+						//Reader:            r,
+						HostFilePath:      nginxConfFile, // will be discarded internally
+						ContainerFilePath: "/etc/nginx/nginx.conf",
+						FileMode:          0o600,
 					},
 				},
+				//Mounts: testcontainers.ContainerMounts{
+				//	testcontainers.ContainerMount{
+				//		Source: testcontainers.GenericVolumeMountSource{}
+				//		//Source: testcontainers.GenericBindMountSource{
+				//		//	HostPath: nginxConfFile,
+				//		//},
+				//		Target: "/etc/nginx/nginx.conf",
+				//	},
+				//},
 				Hostname: "nginx",
 				Networks: []string{net.Name},
 			},
