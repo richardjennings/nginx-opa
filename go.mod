@@ -1,4 +1,4 @@
-module github.com/richardjennings/ingress-nginx-opa
+module github.com/richardjennings/opa-nginx
 
 go 1.22
 

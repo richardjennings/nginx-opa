@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/network"
 	"github.com/testcontainers/testcontainers-go/wait"
 	"log"
 	"net/http"
@@ -33,18 +34,10 @@ func Test_Integration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	network, err := testcontainers.GenericNetwork(ctx, testcontainers.GenericNetworkRequest{
-		ProviderType: testcontainers.ProviderDocker,
-		NetworkRequest: testcontainers.NetworkRequest{
-			Name:           "integration",
-			Driver:         "bridge",
-			CheckDuplicate: true,
-		},
-	})
+	net, err := network.New(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	testPolicy := `package system.main
 
 import future.keywords.if
@@ -75,10 +68,10 @@ verified if {
 					"AUTHORIZED_KEY":      "allow",
 					"AUTHORIZED_VALUE":    "true",
 				},
-				Hostname:     "ingress-nginx-opa",
+				Hostname:     "opa-nginx",
 				ExposedPorts: []string{"8282:8282/tcp"},
 				WaitingFor:   wait.ForListeningPort("8282/tcp"),
-				Networks:     []string{"integration"},
+				Networks:     []string{net.Name},
 			},
 			ProviderType: testcontainers.ProviderDocker,
 			Started:      true,
@@ -97,7 +90,7 @@ verified if {
 					},
 				},
 				Hostname: "nginx",
-				Networks: []string{"integration"},
+				Networks: []string{net.Name},
 			},
 			ProviderType: testcontainers.ProviderDocker,
 			Started:      true,
@@ -109,7 +102,7 @@ verified if {
 				WaitingFor:   wait.ForListeningPort("8181/tcp"),
 				Cmd:          []string{"run", "--server", "--set", "decision_logs.console=true", "--addr", "0.0.0.0:8181"},
 				Hostname:     "opa",
-				Networks:     []string{"integration"},
+				Networks:     []string{net.Name},
 			},
 			ProviderType: testcontainers.ProviderDocker,
 			Started:      true,
@@ -197,7 +190,7 @@ verified if {
 	}
 
 	t.Cleanup(func() {
-		require.NoError(t, network.Remove(ctx))
+		require.NoError(t, net.Remove(ctx))
 	})
 
 }
